@@ -14,7 +14,7 @@ namespace Northwind
         {           
             using (var session = DocumentStoreHolder.Store.OpenSession())
             {
-                var p = session.Load<dynamic>("products/2");
+                var p = session.Load<dynamic>("products/3");
                 System.Console.WriteLine(p.Name);
                 Console.ReadLine();
             }
@@ -27,8 +27,7 @@ namespace Northwind
         {
             var store = new DocumentStore
             {
-                Url = "http://localhost:8080",
-                DefaultDatabase = "Northwind"
+                ConnectionStringName = "RavenDB"
             };
 
             return store.Initialize();
