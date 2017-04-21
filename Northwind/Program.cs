@@ -11,7 +11,12 @@ namespace Northwind
     class Program
     {
         static void Main(string[] args)
-        {           
+        {
+            GetProductByConvention();
+        }
+
+        private static void SimpleGetProduct()
+        {
             using (var session = DocumentStoreHolder.Store.OpenSession())
             {
                 var p = session.Load<dynamic>("products/3");
@@ -19,6 +24,21 @@ namespace Northwind
                 Console.ReadLine();
             }
         }
+
+        private static void GetProductByConvention()
+        {
+            using (var session = DocumentStoreHolder.Store.OpenSession())
+            {
+                Product p = session.Load<Product>("products/3");
+                Console.WriteLine(p.Name);
+                Console.ReadLine();
+            }
+        }
+    }
+
+    public class Product
+    {
+        public string Name { get; set; }
     }
 
     public static class DocumentStoreHolder
