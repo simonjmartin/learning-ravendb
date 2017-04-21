@@ -12,15 +12,19 @@ namespace Northwind
     {
         static void Main(string[] args)
         {
-            GetProductByConvention();
+            GetMultipleDocuments();
         }
 
-        private static void SimpleGetProduct()
+        private static void GetMultipleDocuments()
         {
             using (var session = DocumentStoreHolder.Store.OpenSession())
             {
-                var p = session.Load<dynamic>("products/3");
-                System.Console.WriteLine(p.Name);
+                Product[] p = session.Load<Product>(1,2,3);
+
+                foreach (var item in p)
+                {
+                    Console.WriteLine(item.Name);
+                }
                 Console.ReadLine();
             }
         }
@@ -31,6 +35,16 @@ namespace Northwind
             {
                 Product p = session.Load<Product>("products/3");
                 Console.WriteLine(p.Name);
+                Console.ReadLine();
+            }
+        }
+
+        private static void SimpleGetProduct()
+        {
+            using (var session = DocumentStoreHolder.Store.OpenSession())
+            {
+                var p = session.Load<dynamic>("products/3");
+                System.Console.WriteLine(p.Name);
                 Console.ReadLine();
             }
         }
