@@ -19,21 +19,51 @@ namespace Northwind
         {
             while (true)
             {
-                Console.WriteLine("Please, enter an order # (0 to exit):");
+                Console.WriteLine("Please, enter a company id (0 to exit):");
 
-                int orderNumber;
-                if(!int.TryParse(Console.ReadLine(), out orderNumber))
+                int companyId;
+                if(!int.TryParse(Console.ReadLine(), out companyId))
                 {
-                    Console.WriteLine("Order # is invalid!");
+                    Console.WriteLine("Company id is invalid!");
                     continue;
                 }
 
-                if (orderNumber == 0) break;
+                if (companyId == 0) break;
 
-                PrintOrder(orderNumber);
+                QueryCompanyOrders(companyId);
             }
-            
+
+            Console.WriteLine("Goodbye!");
+
         }
+        private static void QueryCompanyOrders(int companyId)
+        {
+            using (var session = DocumentStoreHolder.Store.OpenSession())
+            {
+                var orders = (
+                    from order in session.Query<Order>()
+                        .Include(o => o.Company)
+                    where order.Company == $"companies/{companyId}"
+                    select order
+                    ).ToList();
+
+                var company = session.Load<Company>(companyId);
+
+                if (company == null)
+                {
+                    Console.WriteLine("Company not found");
+                    return;
+                }
+
+                Console.WriteLine($"Orders for {company.Name}");
+
+                foreach (var order in orders)
+                {
+                    Console.WriteLine($"{order.Id} - {order.OrderedAt}");
+                }
+            }
+        }
+
         private static void PrintOrder(int orderNumber)
         {
             using (var session = DocumentStoreHolder.Store.OpenSession())
